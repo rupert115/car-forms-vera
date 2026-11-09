@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<!-- saved from url=(0034)http://127.0.0.1:5500/index.html#/ -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Справочник форм автомобилей</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg:#f5f7fb; --card:#fff; --ink:#1b2130; --muted:#667085;
+      --line:#e5e9f0; --accent:#2f5bea; --accent-soft:#e8eeff;
+      --danger:#d92d20; --ok:#12b76a; --radius:14px;
+      --shadow:0 6px 24px rgba(20,30,60,.06);
+      --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    }
+    body { margin:0; font-family:var(--font); background:var(--bg); color:var(--ink); line-height:1.6; min-height:100vh; display:flex; flex-direction:column; }
+    #app { flex:1; padding:28px 0 48px; }
+    .container { width:100%; max-width:1180px; margin:0 auto; padding:0 20px; }
+    .site-header { position:sticky; top:0; z-index:100; background:rgba(255,255,255,.94); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+    .header-inner { display:flex; align-items:center; justify-content:space-between; min-height:62px; gap:16px; }
+    .logo { display:flex; align-items:center; gap:8px; font-weight:800; font-size:18px; color:var(--ink); text-decoration:none; }
+    nav { display:flex; gap:6px; }
+    nav a { padding:8px 14px; border-radius:10px; text-decoration:none; color:var(--muted); font-weight:600; font-size:14px; }
+    nav a:hover, nav a.active { color:var(--accent); background:var(--accent-soft); }
+    h1 { margin:0 0 8px; font-size:clamp(26px,4vw,36px); line-height:1.2; }
+    h2 { margin:0 0 14px; }
+    p { color:var(--muted); }
+    .page-head { margin-bottom:24px; }
+    .toolbar { display:flex; gap:12px; margin:22px 0; }
+    input, select, textarea { width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); font:inherit; }
+    input:focus, select:focus, textarea:focus { outline:2px solid var(--accent-soft); border-color:var(--accent); }
+    .toolbar input { flex:1; }
+    .toolbar select { max-width:260px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; border-radius:10px; font-size:14px; font-weight:600; text-decoration:none; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink); font-family:inherit; }
+    .btn:hover { border-color:#cfd6e4; background:#fafbff; }
+    .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .btn.primary:hover { background:#2448c8; }
+    .btn.danger { color:var(--danger); border-color:#f3c3be; }
+    .btn.sm { padding:6px 11px; font-size:13px; }
+    .tag { display:inline-block; font-size:12px; font-weight:700; padding:3px 9px; border-radius:7px; background:var(--accent-soft); color:var(--accent); text-transform:uppercase; letter-spacing:.3px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
+    .card { display:flex; flex-direction:column; background:var(--card); border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); text-decoration:none; color:inherit; transition:.2s; }
+    .card:hover { transform:translateY(-3px); box-shadow:0 14px 30px rgba(20,30,60,.1); }
+    .card-img { aspect-ratio:16/10; background:#eef1f8; overflow:hidden; }
+    .card-img img { width:100%; height:100%; object-fit:cover; display:block; }
+    .card-body { padding:17px; }
+    .card-body h3 { margin:9px 0 5px; }
+    .card-body p { margin:0; }
+    .card-foot { display:flex; justify-content:space-between; gap:8px; margin-top:16px; font-size:13px; color:var(--muted); }
+    .more { color:var(--accent); font-weight:700; }
+    .empty { text-align:center; padding:42px 20px; background:#fff; border:1px dashed var(--line); border-radius:var(--radius); }
+    .pagination { display:flex; justify-content:center; align-items:center; gap:7px; margin-top:26px; }
+    .pg { min-width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; }
+    .pg.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .pg:disabled { opacity:.4; cursor:not-allowed; }
+    .form-view-grid { display:grid; grid-template-columns:1.1fr 1fr; gap:30px; align-items:start; margin-top:20px; }
+    .main-img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:14px; background:#eef1f8; }
+    .thumbs { display:flex; gap:9px; flex-wrap:wrap; margin-top:12px; }
+    .thumb { width:82px; height:62px; padding:3px; border:2px solid transparent; border-radius:9px; background:#fff; cursor:pointer; }
+    .thumb.active { border-color:var(--accent); }
+    .thumb img { width:100%; height:100%; object-fit:cover; border-radius:5px; }
+    .form-info { background:#fff; border:1px solid var(--line); border-radius:14px; padding:24px; }
+    .form-info h1 { margin-top:12px; }
+    .lead { font-size:17px; }
+    .form-stats { display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--muted); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:12px 0; }
+    .desc { white-space:pre-wrap; margin-top:18px; }
+    .back-link { display:inline-block; color:var(--accent); text-decoration:none; font-weight:600; }
+    .admin-layout { display:grid; grid-template-columns:220px 1fr; gap:28px; align-items:start; }
+    .admin-nav { position:sticky; top:86px; display:flex; flex-direction:column; gap:7px; background:#fff; padding:12px; border:1px solid var(--line); border-radius:12px; }
+    .admin-nav a { padding:9px 11px; color:var(--muted); text-decoration:none; border-radius:8px; font-weight:600; }
+    .admin-nav a:hover { background:var(--accent-soft); color:var(--accent); }
+    .admin-content, .panel, .auth-card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow); }
+    .admin-top { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:560px; }
+    th, td { padding:12px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle; }
+    th { color:var(--muted); font-size:13px; }
+    .actions { display:flex; gap:7px; flex-wrap:wrap; }
+    .field { margin:14px 0; }
+    .field label { display:block; margin-bottom:6px; font-weight:600; font-size:14px; }
+    textarea { min-height:120px; resize:vertical; }
+    .auth-wrap { display:flex; justify-content:center; padding:25px 0; }
+    .auth-card { width:min(100%,430px); }
+    .auth-card h2 { text-align:center; }
+    .auth-card .btn { width:100%; margin-top:8px; }
+    .hint { text-align:center; font-size:13px; }
+    .err { color:var(--danger); min-height:22px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin:18px 0; }
+    .stat { background:#f8f9fc; padding:18px; border-radius:12px; }
+    .stat strong { display:block; font-size:28px; }
+    .site-footer { border-top:1px solid var(--line); background:#fff; padding:18px 0; text-align:center; font-size:13px; }
+    .site-footer p { margin:0; }
+    .toast { position:fixed; right:20px; bottom:20px; z-index:999; background:#1b2130; color:#fff; padding:12px 18px; border-radius:10px; opacity:0; transform:translateY(8px); transition:.25s; box-shadow:var(--shadow); }
+    .toast.show { opacity:1; transform:translateY(0); }
+    .toast.error { background:var(--danger); } .toast.success { background:#087443; }
+    @media(max-width:900px) { .form-view-grid,.admin-layout { grid-template-columns:1fr; } .admin-nav { position:static; flex-direction:row; overflow-x:auto; } }
+    @media(max-width:560px) { .container { padding:0 14px; } .header-inner { flex-wrap:wrap; padding:10px 0; } nav a { padding:7px 9px; } .toolbar { flex-direction:column; } .toolbar select { max-width:none; } .form-info,.admin-content { padding:17px; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="http://127.0.0.1:5500/index.html#/" class="logo">🚗 <span>Формы авто</span></a>
+      <nav>
+        <a href="http://127.0.0.1:5500/index.html#/" id="nav-home" class="active">Каталог</a>
+        <a href="http://127.0.0.1:5500/index.html#/admin" id="nav-admin">Админ-панель</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app" class="container">
+        <div class="page-head"><h1>Справочник форм автомобилей</h1><p>Типы кузова: описание, характеристики и фотографии.</p></div>
+        <div class="toolbar">
+          <input type="search" id="q" placeholder="🔍 Поиск по названию...">
+          <select id="catSel"><option value="">Все категории</option><option value="Легковые">Легковые</option><option value="Внедорожники">Внедорожники</option><option value="Грузовые">Грузовые</option></select>
+        </div>
+        <div id="results"><div class="grid">
+        <a class="card" href="http://127.0.0.1:5500/index.html#/form/6">
+          <div class="card-img"><img src="./Справочник форм автомобилей_files/images" alt="Пикап"></div>
+          <div class="card-body"><span class="tag">Грузовые</span><h3>Пикап</h3>
+          <p>Автомобиль с открытой грузовой платформой</p>
+          <div class="card-foot"><span>👁 1 просмотров</span><span class="more">Подробнее →</span></div></div>
+        </a>
+        <a class="card" href="http://127.0.0.1:5500/index.html#/form/5">
+          <div class="card-img"><img src="./Справочник форм автомобилей_files/ee3c5b004918666f8d0f6b7d518750b6-e1743784082686.jpg" alt="Внедорожник (SUV)"></div>
+          <div class="card-body"><span class="tag">Внедорожники</span><h3>Внедорожник (SUV)</h3>
+          <p>Автомобиль с повышенной проходимостью и высоким кузовом</p>
+          <div class="card-foot"><span>👁 2 просмотров</span><span class="more">Подробнее →</span></div></div>
+        </a>
+        <a class="card" href="http://127.0.0.1:5500/index.html#/form/4">
+          <div class="card-img"><img src="./Справочник форм автомобилей_files/b729LD__60c70ac7de230d55064a11e1-jpg.jpeg" alt="Купе"></div>
+          <div class="card-body"><span class="tag">Легковые</span><h3>Купе</h3>
+          <p>Обычно двухдверный автомобиль с выразительным дизайном</p>
+          <div class="card-foot"><span>👁 1 просмотров</span><span class="more">Подробнее →</span></div></div>
+        </a>
+        <a class="card" href="http://127.0.0.1:5500/index.html#/form/3">
+          <div class="card-img"><img src="./Справочник форм автомобилей_files/223591-new-volvo-v60-exterior.jpg" alt="Универсал"></div>
+          <div class="card-body"><span class="tag">Легковые</span><h3>Универсал</h3>
+          <p>Практичный кузов с увеличенным багажным отделением</p>
+          <div class="card-foot"><span>👁 2 просмотров</span><span class="more">Подробнее →</span></div></div>
+        </a>
+        <a class="card" href="http://127.0.0.1:5500/index.html#/form/2">
+          <div class="card-img"><img src="./Справочник форм автомобилей_files/vw-golf-tdi-titelbild.jpg" alt="Хэтчбек"></div>
+          <div class="card-body"><span class="tag">Легковые</span><h3>Хэтчбек</h3>
+          <p>Кузов с задней дверью, открывающей доступ в салон</p>
+          <div class="card-foot"><span>👁 1 просмотров</span><span class="more">Подробнее →</span></div></div>
+        </a>
+        <a class="card" href="http://127.0.0.1:5500/index.html#/form/1">
+          <div class="card-img"><img src="./Справочник форм автомобилей_files/b1bb7f26a568ccd8ab1208605841b6e6.jpg" alt="Седан"></div>
+          <div class="card-body"><span class="tag">Легковые</span><h3>Седан</h3>
+          <p>Классический кузов с отдельным багажником</p>
+          <div class="card-foot"><span>👁 1 просмотров</span><span class="more">Подробнее →</span></div></div>
+        </a></div></div></main>
+
+  <footer class="site-footer">
+    <div class="container"><p>Учебный проект · HTML / CSS / JavaScript · localStorage</p></div>
+  </footer>
+
+  <script>
+    // Ключи для хранения данных в браузере
+    const K = {
+      forms: 'cf_forms',
+      cats: 'cf_categories',
+      nextId: 'cf_nextId',
+      admin: 'cf_admin',
+      initialized: 'cf_initialized'
+    };
+
+    const ADMIN_DEFAULT = { login: 'admin', password: 'admin123' };
+    const PER_PAGE = 6;
+    const app = document.getElementById('app');
+    let state = { q: '', cat: '', page: 1 };
+
+    // Текущая дата в удобном формате
+    function now() {
+      return new Date().toLocaleDateString('ru-RU');
+    }
+
+    // Защита текста при выводе в HTML
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+      }[c]));
+    }
+
+    function toast(message, type = 'info') {
+      const el = document.createElement('div');
+      el.className = 'toast ' + type;
+      el.textContent = message;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 300);
+      }, 2600);
+    }
+
+    function ph(text, color = '#2f5bea') {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="800" height="500" fill="${color}"/><text x="400" y="260" fill="#fff" font-family="Arial" font-size="52" font-weight="bold" text-anchor="middle">${esc(text)}</text></svg>`;
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    async function hashPassword(password) {
+      const data = new TextEncoder().encode(password);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function getForms() {
+      try { return JSON.parse(localStorage.getItem(K.forms) || '[]'); }
+      catch { return []; }
+    }
+    function setForms(forms) {
+      localStorage.setItem(K.forms, JSON.stringify(forms));
+    }
+    function getCats() {
+      try { return JSON.parse(localStorage.getItem(K.cats) || '[]'); }
+      catch { return []; }
+    }
+    function setCats(categories) {
+      localStorage.setItem(K.cats, JSON.stringify(categories));
+    }
+    function nextId() {
+      const id = Number(localStorage.getItem(K.nextId) || 1);
+      localStorage.setItem(K.nextId, String(id + 1));
+      return id;
+    }
+    function isAuthed() { return sessionStorage.getItem(K.admin) === '1'; }
+    function requireAuth() {
+      if (!isAuthed()) { location.hash = '#/admin/login'; return false; }
+      return true;
+    }
+
+    const SEED = [
+      { title:'Седан', category:'Легковые', short:'Классический кузов с отдельным багажником', desc:'Седан — тип кузова легкового автомобиля с тремя отдельными объёмами: моторным отсеком, салоном и багажником.\nПримеры: Toyota Camry, Hyundai Sonata.', color:'#2f5bea' },
+      { title:'Хэтчбек', category:'Легковые', short:'Кузов с задней дверью, открывающей доступ в салон', desc:'Хэтчбек отличается укороченной задней частью и дверью багажника, которая открывается вместе со стеклом.\nПримеры: Volkswagen Golf, Kia Ceed.', color:'#12b76a' },
+      { title:'Универсал', category:'Легковые', short:'Практичный кузов с увеличенным багажным отделением', desc:'Универсал имеет удлинённую крышу и большое багажное отделение, объединённое с салоном.\nПримеры: Volvo V60, Lada Vesta SW.', color:'#f79009' },
+      { title:'Купе', category:'Легковые', short:'Обычно двухдверный автомобиль с выразительным дизайном', desc:'Купе — тип кузова, который традиционно имеет две двери и более спортивные пропорции.\nПримеры: BMW 4 Series Coupe, Ford Mustang.', color:'#7a5af8' },
+      { title:'Внедорожник (SUV)', category:'Внедорожники', short:'Автомобиль с повышенной проходимостью и высоким кузовом', desc:'Внедорожники и SUV отличаются высокой посадкой, увеличенным дорожным просветом и просторным салоном.\nПримеры: Toyota Land Cruiser, Nissan Patrol.', color:'#d92d20' },
+      { title:'Пикап', category:'Грузовые', short:'Автомобиль с открытой грузовой платформой', desc:'Пикап сочетает кабину для пассажиров и открытую грузовую платформу.\nПримеры: Toyota Hilux, Ford Ranger.', color:'#475467' }
+    ];
+
+    async function init() {
+      if (!localStorage.getItem(K.initialized)) {
+        setCats(['Легковые', 'Внедорожники', 'Грузовые']);
+        const forms = SEED.map((item, index) => ({
+          id:index + 1, title:item.title, category:item.category,
+          short_description:item.short, description:item.desc,
+          main_image:ph(item.title, item.color),
+          images:[ph(item.title + ' — вид 1', item.color), ph(item.title + ' — вид 2', item.color)],
+          views:0, created_at:now(), updated_at:now()
+        }));
+        setForms(forms);
+        localStorage.setItem(K.nextId, String(forms.length + 1));
+        localStorage.setItem(K.admin, JSON.stringify({
+          login:ADMIN_DEFAULT.login,
+          hash:await hashPassword(ADMIN_DEFAULT.password)
+        }));
+        localStorage.setItem(K.initialized, '1');
+      }
+      // Если браузер сохранил старую версию данных, проверяем наличие администратора
+      if (!localStorage.getItem(K.admin)) {
+        localStorage.setItem(K.admin, JSON.stringify({
+          login:ADMIN_DEFAULT.login, hash:await hashPassword(ADMIN_DEFAULT.password)
+        }));
+      }
+      route();
+    }
+
+    function route() {
+      const parts = (location.hash.slice(1) || '/').split('/').filter(Boolean);
+      document.querySelectorAll('.site-header nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById(parts[0] === 'admin' ? 'nav-admin' : 'nav-home').classList.add('active');
+      window.scrollTo(0, 0);
+
+      if (parts[0] === 'form' && parts[1]) return renderForm(Number(parts[1]));
+      if (parts[0] === 'admin') {
+        if (parts[1] === 'login') return renderAdminLogin();
+        if (parts[1] === 'logout') {
+          sessionStorage.removeItem(K.admin);
+          toast('Вы вышли из панели', 'success');
+          location.hash = '#/';
+          return;
+        }
+        if (!requireAuth()) return;
+        if (parts[1] === 'forms') return renderAdminForms();
+        if (parts[1] === 'categories') return renderAdminCategories();
+        if (parts[1] === 'form' && parts[2] === 'add') return renderAdminForm(null);
+        if (parts[1] === 'form' && parts[2] === 'edit') return renderAdminForm(Number(parts[3]));
+        return renderAdminDashboard();
+      }
+      renderHome();
+    }
+    window.addEventListener('hashchange', route);
+
+    function renderHome() {
+      state = { q:'', cat:'', page:1 };
+      app.innerHTML = `
+        <div class="page-head"><h1>Справочник форм автомобилей</h1><p>Типы кузова: описание, характеристики и фотографии.</p></div>
+        <div class="toolbar">
+          <input type="search" id="q" placeholder="🔍 Поиск по названию...">
+          <select id="catSel"><option value="">Все категории</option></select>
+        </div>
+        <div id="results"></div>`;
+      document.getElementById('catSel').innerHTML += getCats().map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      document.getElementById('q').addEventListener('input', e => { state.q=e.target.value; state.page=1; renderHomeList(); });
+      document.getElementById('catSel').addEventListener('change', e => { state.cat=e.target.value; state.page=1; renderHomeList(); });
+      document.getElementById('results').addEventListener('click', e => {
+        const button=e.target.closest('[data-page]');
+        if (!button || button.disabled) return;
+        state.page=Number(button.dataset.page); renderHomeList();
+        document.getElementById('results').scrollIntoView({behavior:'smooth'});
+      });
+      renderHomeList();
+    }
+
+    function renderHomeList() {
+      const q=state.q.trim().toLowerCase();
+      const filtered=getForms().filter(f =>
+        (!q || (f.title || '').toLowerCase().includes(q)) &&
+        (!state.cat || f.category===state.cat)
+      ).sort((a,b)=>b.id-a.id);
+      const totalPages=Math.max(1,Math.ceil(filtered.length/PER_PAGE));
+      state.page=Math.min(state.page,totalPages);
+      const items=filtered.slice((state.page-1)*PER_PAGE,state.page*PER_PAGE);
+      const results=document.getElementById('results');
+      if (!items.length) {
+        results.innerHTML='<div class="empty"><h2>Ничего не найдено</h2><p>Попробуйте изменить запрос или категорию.</p></div>';
+        return;
+      }
+      results.innerHTML='<div class="grid">'+items.map(f=>`
+        <a class="card" href="#/form/${f.id}">
+          <div class="card-img"><img src="${f.main_image || ph('Нет фото')}" alt="${esc(f.title)}"></div>
+          <div class="card-body"><span class="tag">${esc(f.category)}</span><h3>${esc(f.title)}</h3>
+          <p>${esc(f.short_description || '')}</p>
+          <div class="card-foot"><span>👁 ${f.views || 0} просмотров</span><span class="more">Подробнее →</span></div></div>
+        </a>`).join('')+'</div>'+paginationHtml(totalPages,state.page);
+    }
+
+    function paginationHtml(total,current) {
+      if (total<=1) return '';
+      let html='<div class="pagination">';
+      html+=`<button class="pg" data-page="${current-1}" ${current===1?'disabled':''}>←</button>`;
+      let last=0;
+      for(let i=1;i<=total;i++) {
+        if(i===1 || i===total || Math.abs(i-current)<=2) {
+          if(i-last>1) html+='<span>…</span>';
+          html+=`<button class="pg ${i===current?'active':''}" data-page="${i}">${i}</button>`;
+          last=i;
+        }
+      }
+      return html+`<button class="pg" data-page="${current+1}" ${current===total?'disabled':''}>→</button></div>`;
+    }
+
+    function renderForm(id) {
+      const forms=getForms();
+      const index=forms.findIndex(f=>f.id===id);
+      if(index===-1) {
+        app.innerHTML='<div class="empty"><h2>Запись не найдена</h2><a class="btn" href="#/">Вернуться в каталог</a></div>';
+        return;
+      }
+      forms[index].views=(forms[index].views||0)+1;
+      setForms(forms);
+      const f=forms[index];
+      const images=[f.main_image,...(f.images||[])].filter(Boolean);
+      app.innerHTML=`
+        <a href="#/" class="back-link">← Назад к каталогу</a>
+        <div class="form-view-grid">
+          <div class="gallery"><img id="mainImg" class="main-img" src="${images[0]||ph('Нет фото')}" alt="${esc(f.title)}">
+            <div class="thumbs">${images.map((src,i)=>`<button class="thumb ${i===0?'active':''}" data-index="${i}"><img src="${src}" alt="Фото ${i+1}"></button>`).join('')}</div>
+          </div>
+          <div class="form-info"><span class="tag">${esc(f.category)}</span><h1>${esc(f.title)}</h1>
+            <p class="lead">${esc(f.short_description||'')}</p>
+            <div class="form-stats"><span>👁 ${f.views} просмотров</span><span>📅 Добавлено: ${esc(f.created_at||'')}</span></div>
+            <div class="desc">${esc(f.description||'Описание пока не добавлено.')}</div>
+          </div>
+        </div>`;
+      document.querySelectorAll('.thumb').forEach((button,i)=>button.addEventListener('click',()=>{
+        document.getElementById('mainImg').src=images[i];
+        document.querySelectorAll('.thumb').forEach(x=>x.classList.remove('active'));
+        button.classList.add('active');
+      }));
+    }
+
+    function adminMenu(content) {
+      app.innerHTML=`<div class="admin-layout">
+        <aside class="admin-nav">
+          <a href="#/admin">Обзор</a><a href="#/admin/forms">Записи</a>
+          <a href="#/admin/form/add">Добавить запись</a><a href="#/admin/categories">Категории</a>
+          <a href="#/admin/logout">Выйти</a>
+        </aside><section class="admin-content">${content}</section></div>`;
+    }
+
+    function renderAdminLogin() {
+      app.innerHTML=`
+        <div class="auth-wrap"><form class="auth-card" id="loginForm">
+          <h2>Вход в админ-панель</h2><p class="hint">По умолчанию: <b>admin</b> / <b>admin123</b></p>
+          <div class="field"><label for="login">Логин</label><input id="login" name="login" required autofocus></div>
+          <div class="field"><label for="password">Пароль</label><input id="password" name="password" type="password" required></div>
+          <button class="btn primary" type="submit">Войти</button><p class="err" id="err"></p>
+        </form></div>`;
+      document.getElementById('loginForm').addEventListener('submit',async e=>{
+        e.preventDefault();
+        const data=new FormData(e.target);
+        const login=String(data.get('login')||'').trim();
+        const password=String(data.get('password')||'');
+        const admin=JSON.parse(localStorage.getItem(K.admin)||'null');
+        const error=document.getElementById('err');
+        if(!admin){error.textContent='Администратор не настроен.';return;}
+        if(login===admin.login && await hashPassword(password)===admin.hash) {
+          sessionStorage.setItem(K.admin,'1'); toast('Добро пожаловать!','success'); location.hash='#/admin';
+        } else error.textContent='Неверный логин или пароль.';
+      });
+    }
+
+    function renderAdminDashboard() {
+      const forms=getForms(), cats=getCats();
+      adminMenu(`<div class="admin-top"><h1>Админ-панель</h1><a class="btn primary" href="#/admin/form/add">+ Добавить запись</a></div>
+        <p>Управление справочником форм автомобилей.</p>
+        <div class="stats-grid">
+          <div class="stat"><strong>${forms.length}</strong><span>Всего записей</span></div>
+          <div class="stat"><strong>${cats.length}</strong><span>Категорий</span></div>
+          <div class="stat"><strong>${forms.reduce((sum,f)=>sum+(f.views||0),0)}</strong><span>Просмотров</span></div>
+        </div>
+        <a class="btn" href="#/admin/forms">Перейти к записям</a>`);
+    }
+
+    function renderAdminForms() {
+      const rows=getForms().sort((a,b)=>b.id-a.id);
+      adminMenu(`<div class="admin-top"><h1>Записи справочника</h1><a class="btn primary" href="#/admin/form/add">+ Добавить</a></div>
+        ${rows.length?`<div class="table-wrap"><table><thead><tr><th>Название</th><th>Категория</th><th>Просмотры</th><th>Действия</th></tr></thead><tbody>
+        ${rows.map(f=>`<tr><td>${esc(f.title)}</td><td>${esc(f.category)}</td><td>${f.views||0}</td><td><div class="actions">
+          <a class="btn sm" href="#/admin/form/edit/${f.id}">Изменить</a>
+          <button class="btn sm danger" data-delete="${f.id}">Удалить</button>
+        </div></td></tr>`).join('')}</tbody></table></div>`:'<p>Записей пока нет.</p>'}`);
+      document.querySelectorAll('[data-delete]').forEach(button=>button.addEventListener('click',()=>{
+        const id=Number(button.dataset.delete);
+        if(!confirm('Удалить эту запись?')) return;
+        setForms(getForms().filter(f=>f.id!==id)); toast('Запись удалена','success'); renderAdminForms();
+      }));
+    }
+
+    function renderAdminForm(id) {
+      const editing=id!==null;
+      const item=editing?getForms().find(f=>f.id===id):null;
+      if(editing&&!item){toast('Запись не найдена','error');location.hash='#/admin/forms';return;}
+      const categories=getCats();
+      adminMenu(`<h1>${editing?'Редактирование записи':'Новая запись'}</h1>
+        <form id="recordForm">
+          <div class="field"><label>Название</label><input name="title" required value="${esc(item?.title||'')}"></div>
+          <div class="field"><label>Категория</label><select name="category" required>
+            <option value="">Выберите категорию</option>${categories.map(c=>`<option ${item?.category===c?'selected':''} value="${esc(c)}">${esc(c)}</option>`).join('')}
+          </select></div>
+          <div class="field"><label>Краткое описание</label><input name="short" value="${esc(item?.short_description||'')}"></div>
+          <div class="field"><label>Полное описание</label><textarea name="description">${esc(item?.description||'')}</textarea></div>
+          <div class="field"><label>Ссылка на главное изображение (необязательно)</label><input name="image" type="url" placeholder="https://..." value="${esc(item?.main_image||'')}"></div>
+          <button class="btn primary" type="submit">Сохранить</button> <a class="btn" href="#/admin/forms">Отмена</a>
+        </form>`);
+      document.getElementById('recordForm').addEventListener('submit',e=>{
+        e.preventDefault();
+        const data=new FormData(e.target);
+        const title=String(data.get('title')||'').trim();
+        const category=String(data.get('category')||'');
+        if(!title||!category){toast('Заполните обязательные поля','error');return;}
+        const forms=getForms();
+        const image=String(data.get('image')||'').trim();
+        const record={
+          id:editing?item.id:nextId(), title, category,
+          short_description:String(data.get('short')||'').trim(),
+          description:String(data.get('description')||'').trim(),
+          main_image:image||(editing?item.main_image:ph(title)),
+          images:editing?(item.images||[]):[],
+          views:editing?(item.views||0):0,
+          created_at:editing?item.created_at:now(), updated_at:now()
+        };
+        if(editing){const index=forms.findIndex(f=>f.id===id);forms[index]=record;}
+        else forms.push(record);
+        setForms(forms); toast('Изменения сохранены','success'); location.hash='#/admin/forms';
+      });
+    }
+
+    function renderAdminCategories() {
+      const cats=getCats();
+      adminMenu(`<h1>Категории</h1><form id="categoryForm" class="toolbar">
+          <input name="category" placeholder="Название новой категории" required><button class="btn primary" type="submit">Добавить</button>
+        </form>
+        ${cats.length?`<div class="table-wrap"><table><thead><tr><th>Название</th><th>Действия</th></tr></thead><tbody>
+          ${cats.map(c=>`<tr><td>${esc(c)}</td><td><button class="btn sm danger" data-cat="${esc(c)}">Удалить</button></td></tr>`).join('')}
+        </tbody></table></div>`:'<p>Категорий пока нет.</p>'}
+        <p class="hint">Удалить категорию можно только тогда, когда к ней не привязаны записи.</p>`);
+      document.getElementById('categoryForm').addEventListener('submit',e=>{
+        e.preventDefault();
+        const input=e.target.elements.category;
+        const name=input.value.trim();
+        const current=getCats();
+        if(current.some(c=>c.toLowerCase()===name.toLowerCase())){toast('Такая категория уже существует','error');return;}
+        setCats([...current,name]); renderAdminCategories(); toast('Категория добавлена','success');
+      });
+      document.querySelectorAll('[data-cat]').forEach(button=>button.addEventListener('click',()=>{
+        const name=button.dataset.cat;
+        if(getForms().some(f=>f.category===name)){toast('Сначала измените категорию у связанных записей','error');return;}
+        setCats(getCats().filter(c=>c!==name)); renderAdminCategories(); toast('Категория удалена','success');
+      }));
+    }
+
+    document.addEventListener('DOMContentLoaded',init);
+  </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
