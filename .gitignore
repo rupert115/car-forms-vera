@@ -1,0 +1,21 @@
+# Системные файлы ОС
+.DS_Store
+Thumbs.db
+
+# Настройки редакторов
+.vscode/
+.idea/
+*.swp
+
+# Временные файлы
+*.log
+*.tmp
+~$*
+
+# Архивы и бэкапы
+*.zip
+*.rar
+*.7z
+
+# node_modules (на будущее)
+node_modules/
